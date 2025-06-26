@@ -1,0 +1,33 @@
+quarkus:
+  datasource:
+    db-kind: mysql
+    reactive:
+      url: mysql://localhost:3306/orderdb
+    username: root
+    password: admin
+  package:
+    jar:
+      enabled: true
+  http:
+    port: 8082
+kafka:
+  bootstrap:
+    servers: PLAINTEXT://192.168.1.36:19092
+mp:
+  messaging:
+    connector:
+      smallrye-kafka:
+        schema:
+          registry:
+            url: http://192.168.1.36:8081
+        auto:
+          register:
+            schemas: false
+        use:
+          latest:
+            version: true
+
+    outgoing: ## va salir del microservicio para que vaya al topico de kafka
+      order-emitter:
+        connector: smallrye-kafka
+        topic: order-topic
