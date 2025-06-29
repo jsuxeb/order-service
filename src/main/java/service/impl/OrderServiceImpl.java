@@ -68,13 +68,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Uni<OrderDto> updateOrder(Long orderId, OrderStatus status) {
         return orderRepository.findOrderByOrderId(orderId)
-                .onItem().ifNull().failWith(() -> new OrdersNotFoundException("No se encontró el pedido con ID: " + orderId))
+                .onItem().ifNull().failWith(() -> new OrdersNotFoundException("No se encontró el pedido con ID"))
                 .onItem().ifNotNull()
                 .transformToUni(order -> {
                     order.setStatus(status);
-                    return orderRepository.updateOrder(order)
-                            .onItem().transform(ObjectMapperUtil::convertOrderToOrderDto);
-                });
+                    return orderRepository.updateOrder(order);
+                })
+                .onItem()
+                .ifNotNull()
+                .transformToUni(oderUpdated -> sendEvents(oderUpdated)
+                        .onItem().transform(ObjectMapperUtil::convertOrderToOrderDto));
+
+
     }
 
 

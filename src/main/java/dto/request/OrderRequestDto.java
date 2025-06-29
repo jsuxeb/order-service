@@ -7,16 +7,16 @@ import java.util.List;
 
 public class OrderRequestDto {
     @NotNull(message = "userId cannot be null")
-    private String userId;
+    private Long userId;
     @NotEmpty(message = "items list cannot be empty")
     private List<OrderItemRequestDto> items;
 
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

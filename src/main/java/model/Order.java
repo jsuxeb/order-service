@@ -1,6 +1,8 @@
 package model;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import jakarta.inject.Inject;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -8,13 +10,14 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
-public class Order extends PanacheEntity {
+public class Order extends PanacheEntityBase {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userId;
+    private Long userId;
     private LocalDateTime orderDate;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OrderItem> items;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -28,11 +31,11 @@ public class Order extends PanacheEntity {
         this.id = id;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

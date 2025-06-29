@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.MessagePublisherService;
 
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
 
     @Override
     public Uni<Void> sendOrderToOrchestrator(Order order) {
-        log.info("Sync stock event sending...");
+        log.info("Pedido con id {} enviado al orquestador", order.getId());
 
         var message = Message.of(convertOrderToAvro(order))
                 .addMetadata(OutgoingKafkaRecordMetadata.builder().withKey(UUID.randomUUID().toString()).build());
@@ -39,18 +40,17 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
     private avro.model.Order convertOrderToAvro(Order order) {
         avro.model.Order orderAvro = new avro.model.Order(
                 order.getId(),
-                order.getUserId(),
-                order.getOrderDate() != null ? order.getOrderDate().toInstant(ZoneOffset.UTC) : null,
+                order.getUserId().intValue(),
+                order.getOrderDate() != null ? order.getOrderDate().atOffset(ZoneOffset.UTC).toInstant(): null,
+                order.getStatus() != null ? avro.model.OrderStatus.valueOf(order.getStatus().name()) : null,
+                order.getTotalAmount(),
                 order.getItems() != null ? order.getItems().stream()
                         .map(this::convertOrderItemToAvro)
-                        .toList() : null,
-                order.getStatus() != null ? avro.model.OrderStatus.valueOf(order.getStatus().name()) : null,
-                order.getTotalAmount()
+                        .toList() : null
         );
 
         return orderAvro;
     }
-
 
 
     private avro.model.OrderItem convertOrderItemToAvro(model.OrderItem item) {
@@ -59,8 +59,11 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
                 item.getProductName(),
                 item.getQuantity(),
                 item.getUnitPrice(),
-                item.getSubtotal()
+                item.getSubtotal(),
+                item.getProductType()
         );
+
+
     }
 
 

@@ -1,6 +1,7 @@
 package resource;
 
 import dto.OrderDto;
+import dto.OrderUpdateDto;
 import dto.request.OrderRequestDto;
 import exceptions.ErrorHandlerUtil;
 import exceptions.OrdersNotFoundException;
@@ -48,7 +49,7 @@ public class OderResource {
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> updateOrderStatus(OrderDto orderDto) {
+    public Uni<Response> updateOrderStatus(OrderUpdateDto orderDto) {
         return orderService.updateOrder(orderDto.getOrderId(), orderDto.getStatus())
                 .onItem()
                 .transform(updatedOrder -> Response.ok(updatedOrder).status(Response.Status.OK).build())

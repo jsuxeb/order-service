@@ -4,7 +4,7 @@
   "namespace": "avro.model",
   "fields": [
     { "name": "id", "type": "long" },
-    { "name": "userId", "type": "string" },
+    { "name": "userId", "type": "int" },
     {
       "name": "orderDate",
       "type": {
@@ -12,6 +12,15 @@
         "logicalType": "timestamp-millis"
       }
     },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "OrderStatus",
+        "symbols": ["CREATED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"]
+      }
+    },
+    { "name": "totalAmount", "type": "double" },
     {
       "name": "items",
       "type": {
@@ -25,19 +34,11 @@
             { "name": "productName", "type": "string" },
             { "name": "quantity", "type": "int" },
             { "name": "unitPrice", "type": "double" },
-            { "name": "subtotal", "type": "double" }
+            { "name": "subtotal", "type": "double" },
+            { "name": "productType", "type": "string" }
           ]
         }
       }
-    },
-    {
-      "name": "status",
-      "type": {
-        "type": "enum",
-        "name": "OrderStatus",
-        "symbols": ["CREATED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"]
-      }
-    },
-    { "name": "totalAmount", "type": "double" }
+    }
   ]
 }

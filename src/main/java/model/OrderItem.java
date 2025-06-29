@@ -2,18 +2,20 @@ package model;
 
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "order_items")
-public class OrderItem extends PanacheEntity {
+@Table(name = "orderitems")
+public class OrderItem extends PanacheEntityBase {
 
 
 
     @ManyToOne
-    @JoinColumn(name = "items")
+    @JoinColumn(name = "orderid")
     public Order order;
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String sku;
@@ -21,6 +23,7 @@ public class OrderItem extends PanacheEntity {
     private int quantity;
     private double unitPrice;
     private double subtotal;
+    private String productType;
 
     public Order getOrder() {
         return order;
@@ -76,5 +79,13 @@ public class OrderItem extends PanacheEntity {
 
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 }

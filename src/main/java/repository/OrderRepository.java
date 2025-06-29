@@ -1,5 +1,6 @@
 package repository;
 
+import com.google.gson.Gson;
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
@@ -19,9 +20,7 @@ public class OrderRepository implements PanacheRepository<Order> {
 
     @WithTransaction
     public Uni<Order> saveOrder(Order order) {
-        log.info("[START] SAVING ORDER");
         return persist(order);
-        //.transform(ObjectMapperUtil::convertOrderToOrderDto);
     }
 
     @WithSession

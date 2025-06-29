@@ -6,6 +6,7 @@ public class OrderItemRequestDto {
     private int quantity;
     private double price;
     private double subtotal;
+    private String itemType;
 
     public String getSku() {
         return sku;
@@ -45,5 +46,13 @@ public class OrderItemRequestDto {
 
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 }

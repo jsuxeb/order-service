@@ -7,6 +7,7 @@ import model.OrderItem;
 import model.OrderStatus;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ public class ObjectMapperUtil {
         }
         Order order = new Order();
         order.setStatus(OrderStatus.CREATED);
-        order.setOrderDate(LocalDateTime.now());
+        order.setOrderDate(LocalDateTime.now(ZoneId.of("GMT-5")));
         order.setUserId(orderRequestDto.getUserId());
         if (orderRequestDto.getItems() != null) {
             List<OrderItem> items = orderRequestDto.getItems().stream().map(itemDto -> {
@@ -28,19 +29,14 @@ public class ObjectMapperUtil {
                 item.setSubtotal(itemDto.getPrice() * item.getQuantity());
                 item.setProductName(itemDto.getProductName());
                 item.setUnitPrice(itemDto.getPrice());
+                item.setProductType(itemDto.getItemType());
+                item.setOrder(order);
                 return item;
-
-                /*    private String sku;
-    private String productName;
-    private int quantity;
-    private double price;
-    private double subtotal;
-*/
             }).collect(Collectors.toList());
             order.setItems(items);
         }
         Double totalAmount = order.getItems().stream()
-                .mapToDouble(item -> item.getSubtotal())
+                .mapToDouble(OrderItem::getSubtotal)
                 .sum();
 
         order.setTotalAmount(totalAmount);
@@ -56,12 +52,13 @@ public class ObjectMapperUtil {
         return formattedDate;
     }
 
-    public static OrderDto convertOrderToOrderDto(Order orderItem) {
+    public static OrderDto convertOrderToOrderDto(Order order) {
         OrderDto orderDto = new OrderDto();
-        orderDto.setUserId(orderItem.getUserId());
-        orderDto.setStatus(orderItem.getStatus());
-        orderDto.setOrderDate(ObjectMapperUtil.formatDate(orderItem.getOrderDate()));
-        orderDto.setTotalAmount(orderItem.getTotalAmount());
+        orderDto.setOrderId(order.getId());
+        orderDto.setUserId(order.getUserId().intValue());
+        orderDto.setStatus(order.getStatus());
+        orderDto.setOrderDate(ObjectMapperUtil.formatDate(order.getOrderDate()));
+        orderDto.setTotalAmount(order.getTotalAmount());
         return orderDto;
     }
 }

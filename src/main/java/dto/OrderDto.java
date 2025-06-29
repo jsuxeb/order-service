@@ -7,16 +7,16 @@ import java.time.LocalDateTime;
 public class OrderDto {
 
     private Long orderId;
-    private String userId;
+    private int userId;
     private String orderDate;
     private OrderStatus status;
     private double totalAmount;
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
