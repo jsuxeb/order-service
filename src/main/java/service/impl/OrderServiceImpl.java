@@ -13,6 +13,8 @@ import service.MessagePublisherService;
 import service.OrderService;
 import util.ObjectMapperUtil;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @ApplicationScoped
@@ -72,6 +74,7 @@ public class OrderServiceImpl implements OrderService {
                 .onItem().ifNotNull()
                 .transformToUni(order -> {
                     order.setStatus(status);
+                    order.setUpdatedAt(LocalDateTime.now(ZoneId.of("America/Lima")));
                     return orderRepository.updateOrder(order);
                 })
                 .onItem()

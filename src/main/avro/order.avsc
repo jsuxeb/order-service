@@ -4,13 +4,24 @@
   "namespace": "avro.model",
   "fields": [
     { "name": "id", "type": "long" },
-    { "name": "userId", "type": "int" },
+    { "name": "userId", "type": "long" },
     {
-      "name": "orderDate",
+      "name": "createdAt",
       "type": {
         "type": "long",
         "logicalType": "timestamp-millis"
       }
+    },
+    {
+      "name": "updatedAt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      ],
+      "default": null
     },
     {
       "name": "status",

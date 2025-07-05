@@ -1,15 +1,14 @@
 
 -- orderdb.orders definition
 
-CREATE TABLE `orders` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `userid` varchar(255) DEFAULT NULL,
-  `orderdate` datetime DEFAULT NULL,
-  `status` varchar(50) DEFAULT NULL,
-  `totalamount` double DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NULL,
+    status ENUM('CREATED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED') NOT NULL,
+    total_amount DOUBLE NOT NULL
+);
 
 -- orderdb.orderitems definition
 

@@ -3,7 +3,7 @@ quarkus:
   datasource:
     db-kind: mysql
     reactive:
-      url: ${MYSQL_DB}
+      url: mysql://localhost:3306/orderdb
     username: root
     password: admin
   hibernate-orm:
@@ -17,19 +17,17 @@ quarkus:
   package:
     jar:
       enabled: true
-  http:
-    port: 8082
     test-port: 0
 kafka:
   bootstrap:
-    servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://192.168.1.48:19092}
+    servers: PLAINTEXT://192.168.1.48:19092
 mp:
   messaging:
     connector:
       smallrye-kafka:
         schema:
           registry:
-            url: ${CONFIG_SCHEMA_REGISTRY_URL:http://192.168.1.48:8081}
+            url: http://192.168.1.48:8081
         auto:
           register:
             schemas: false

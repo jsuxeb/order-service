@@ -19,7 +19,6 @@ public class ObjectMapperUtil {
         }
         Order order = new Order();
         order.setStatus(OrderStatus.CREATED);
-        order.setOrderDate(LocalDateTime.now(ZoneId.of("GMT-5")));
         order.setUserId(orderRequestDto.getUserId());
         if (orderRequestDto.getItems() != null) {
             List<OrderItem> items = orderRequestDto.getItems().stream().map(itemDto -> {
@@ -47,7 +46,7 @@ public class ObjectMapperUtil {
         if (orderDate == null) {
             return null;
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDate = orderDate.format(formatter);
         return formattedDate;
     }
@@ -57,8 +56,11 @@ public class ObjectMapperUtil {
         orderDto.setOrderId(order.getId());
         orderDto.setUserId(order.getUserId().intValue());
         orderDto.setStatus(order.getStatus());
-        orderDto.setOrderDate(ObjectMapperUtil.formatDate(order.getOrderDate()));
         orderDto.setTotalAmount(order.getTotalAmount());
+        orderDto.setCreatedAt(ObjectMapperUtil.formatDate(order.getCreatedAt()));
+        if (order.getUpdatedAt() != null) {
+            orderDto.setUpdatedAt(ObjectMapperUtil.formatDate(order.getUpdatedAt()));
+        }
         return orderDto;
     }
 }

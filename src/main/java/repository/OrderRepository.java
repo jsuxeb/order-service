@@ -1,6 +1,5 @@
 package repository;
 
-import com.google.gson.Gson;
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
@@ -42,8 +41,8 @@ public class OrderRepository implements PanacheRepository<Order> {
 
     @WithTransaction
     public Uni<Order> updateOrder(Order order) {
-        String query = "Update Order o set o.status = ?1 where o.id = ?2";
-        return update(query, order.getStatus(), order.getId())
+        String query = "Update Order o set o.status = ?1, o.updatedAt = ?2 where o.id = ?3";
+        return update(query, order.getStatus(), order.getUpdatedAt(), order.getId())
                 .onItem().transform(updatedOrder -> {
                     log.info("Order updated successfully: {}", order.getId());
                     return updatedOrder;

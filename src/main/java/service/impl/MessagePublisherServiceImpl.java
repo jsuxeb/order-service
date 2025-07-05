@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.MessagePublisherService;
 
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
@@ -38,18 +37,18 @@ public class MessagePublisherServiceImpl implements MessagePublisherService {
     }
 
     private avro.model.Order convertOrderToAvro(Order order) {
-        avro.model.Order orderAvro = new avro.model.Order(
+
+        return new avro.model.Order(
                 order.getId(),
-                order.getUserId().intValue(),
-                order.getOrderDate() != null ? order.getOrderDate().atOffset(ZoneOffset.UTC).toInstant(): null,
+                order.getUserId(),
+                order.getCreatedAt() != null ? order.getCreatedAt().toInstant(ZoneOffset.UTC) : null,
+                order.getUpdatedAt() != null ? order.getUpdatedAt().toInstant(ZoneOffset.UTC) : null,
                 order.getStatus() != null ? avro.model.OrderStatus.valueOf(order.getStatus().name()) : null,
                 order.getTotalAmount(),
                 order.getItems() != null ? order.getItems().stream()
                         .map(this::convertOrderItemToAvro)
                         .toList() : null
         );
-
-        return orderAvro;
     }
 
 

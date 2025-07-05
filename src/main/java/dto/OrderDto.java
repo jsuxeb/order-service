@@ -1,16 +1,18 @@
 package dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import model.OrderStatus;
-
-import java.time.LocalDateTime;
 
 public class OrderDto {
 
     private Long orderId;
     private int userId;
-    private String orderDate;
+    private String createdAt;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String updatedAt;
     private OrderStatus status;
     private double totalAmount;
+
 
     public int getUserId() {
         return userId;
@@ -36,12 +38,20 @@ public class OrderDto {
         this.totalAmount = totalAmount;
     }
 
-    public String getOrderDate() {
-        return orderDate;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setOrderDate(String orderDate) {
-        this.orderDate = orderDate;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Long getOrderId() {
