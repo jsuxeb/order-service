@@ -4,6 +4,7 @@ import dto.OrderDto;
 import dto.OrderUpdateDto;
 import dto.request.OrderRequestDto;
 import exceptions.ErrorHandlerUtil;
+import exceptions.OrderAlreadyInStateException;
 import exceptions.OrdersNotFoundException;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
@@ -55,6 +56,10 @@ public class OderResource {
                 .transform(updatedOrder -> Response.ok(updatedOrder).status(Response.Status.OK).build())
                 .onFailure(OrdersNotFoundException.class)
                 .recoverWithItem(e -> Response.status(Response.Status.NOT_FOUND)
+                        .entity(ErrorHandlerUtil.createErrorMessage(e))
+                        .build())
+                .onFailure(OrderAlreadyInStateException.class)
+                .recoverWithItem(e -> Response.status(Response.Status.CONFLICT)
                         .entity(ErrorHandlerUtil.createErrorMessage(e))
                         .build());
 

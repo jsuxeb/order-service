@@ -14,7 +14,7 @@
 
 docker run -d `
   --name order-service `
--p 8082:8082 `
+-p 8082:8080 `
   -e CONFIG_SCHEMA_REGISTRY_URL=http://192.168.1.48:8081 `
 -e CONFIG_KAFKA_BROKERS=PLAINTEXT://192.168.1.48:19092 `
   -e MYSQL_DB=mysql://host.docker.internal:3306/orderdb `

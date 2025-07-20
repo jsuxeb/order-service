@@ -2,6 +2,7 @@ package service.impl;
 
 import dto.OrderDto;
 import dto.request.OrderRequestDto;
+import exceptions.OrderAlreadyInStateException;
 import exceptions.OrdersNotFoundException;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -73,6 +74,12 @@ public class OrderServiceImpl implements OrderService {
                 .onItem().ifNull().failWith(() -> new OrdersNotFoundException("No se encontró el pedido con ID"))
                 .onItem().ifNotNull()
                 .transformToUni(order -> {
+                    if(order.getStatus().name().equalsIgnoreCase(status.name())){
+                        return Uni.createFrom().failure( ()-> new OrderAlreadyInStateException(
+                                "El pedido con ID: " + orderId + " ya se encuentra en el estado: " + status.name()
+                        ));
+                    }
+
                     order.setStatus(status);
                     order.setUpdatedAt(LocalDateTime.now(ZoneId.of("America/Lima")));
                     return orderRepository.updateOrder(order);
