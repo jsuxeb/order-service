@@ -6,6 +6,7 @@ import dto.request.OrderRequestDto;
 import exceptions.ErrorHandlerUtil;
 import exceptions.OrderAlreadyInStateException;
 import exceptions.OrdersNotFoundException;
+import facade.OrderFacade;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -20,15 +21,36 @@ public class OderResource {
     @Inject
     OrderService orderService;
 
-    @POST
+    @Inject
+    OrderFacade orderFacade;
+
+/*    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> createOrder(@Valid final OrderRequestDto order) {
+    public Uni<Response> createOrder(@DefaultValue("DIGITAL") @QueryParam("channel") String channel, @Valid final OrderRequestDto order) {
         return orderService.createOrder(order)
                 .onItem()
                 .transform(orderDto -> Response.status(Response.Status.CREATED).entity(orderDto).build())
                 .onFailure()
                 .recoverWithItem(ex -> Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(ex.getMessage())
+                        .build());
+
+    }*/
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Uni<Response> createOrder(@DefaultValue("DIGITAL") @QueryParam("channel") String channel, @Valid final OrderRequestDto order) {
+        return orderFacade.processOrder(channel, order)
+                .onItem()
+                .transform(orderDto -> {
+                    MediaType mediaType = channel.equalsIgnoreCase("POS")
+                            ? MediaType.TEXT_PLAIN_TYPE
+                            : MediaType.APPLICATION_JSON_TYPE;
+                    return Response.status(Response.Status.CREATED).entity(orderDto).type(mediaType).build();
+                })
+                .onFailure()
+                .recoverWithItem(ex -> Response.status(ErrorHandlerUtil.createErrorMessage(ex).getStatus())
                         .entity(ex.getMessage())
                         .build());
 

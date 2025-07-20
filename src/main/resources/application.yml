@@ -1,4 +1,11 @@
 quarkus:
+  http:
+    port: 8085
+  rest-client:
+    user-host-client:
+      url: https://jsonplaceholder.typicode.com/
+  jackson:
+    fail-on-empty-beans: false
   datasource:
     db-kind: mysql
     reactive:
@@ -17,8 +24,7 @@ quarkus:
     jar:
       enabled: true
     test-port: 0
-  http:
-    port: 8085
+
 kafka:
   bootstrap:
     servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://192.168.1.48:19092}

@@ -3,7 +3,7 @@ package dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import model.OrderStatus;
 
-public class OrderDto {
+public class OrderDto extends OrderResponse {
 
     private Long orderId;
     private int userId;
