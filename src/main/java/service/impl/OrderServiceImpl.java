@@ -3,6 +3,7 @@ package service.impl;
 import dto.OrderDto;
 import dto.OrderResponse;
 import dto.request.OrderRequestDto;
+import exceptions.OrderAlreadyInStateException;
 import exceptions.OrdersNotFoundException;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,6 +15,8 @@ import service.OrderService;
 import strategy.ContextStrategies;
 import util.ObjectMapperUtil;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @ApplicationScoped
@@ -58,8 +61,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Uni<OrderDto> updateOrder(Long orderId, OrderStatus status) {
-        /*return orderRepository.findOrderByOrderId(orderId)
+    public Uni<Order> updateOrder(Long orderId, OrderStatus status) {
+        return orderRepository.findOrderByOrderId(orderId)
                 .onItem().ifNull().failWith(() -> new OrdersNotFoundException("No se encontró el pedido con ID: " + orderId))
                 .onItem().ifNotNull()
                 .transformToUni(order -> {
@@ -71,13 +74,7 @@ public class OrderServiceImpl implements OrderService {
                     order.setStatus(status);
                     order.setUpdatedAt(LocalDateTime.now(ZoneId.of("America/Lima")));
                     return orderRepository.updateOrder(order);
-                })
-                .onItem()
-                .ifNotNull()
-                .transformToUni(oderUpdated -> sendEvents(oderUpdated)
-                        .onItem().transform(ObjectMapperUtil::convertOrderToOrderDto));*/
-
-        return Uni.createFrom().nullItem();
+                });
     }
 
     @Override

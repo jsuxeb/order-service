@@ -19,7 +19,7 @@ public interface OrderService {
 
     Uni<OrderDto> findOrderByOrderId(Long orderId);
 
-    Uni<OrderDto> updateOrder(Long orderId, OrderStatus status);
+    Uni<Order> updateOrder(Long orderId, OrderStatus status);
 
     Uni<OrderResponse> transformOrderResponse(Order r, String channel);
 }

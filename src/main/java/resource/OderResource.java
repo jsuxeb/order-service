@@ -19,24 +19,7 @@ import service.OrderService;
 public class OderResource {
 
     @Inject
-    OrderService orderService;
-
-    @Inject
     OrderFacade orderFacade;
-
-/*    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> createOrder(@DefaultValue("DIGITAL") @QueryParam("channel") String channel, @Valid final OrderRequestDto order) {
-        return orderService.createOrder(order)
-                .onItem()
-                .transform(orderDto -> Response.status(Response.Status.CREATED).entity(orderDto).build())
-                .onFailure()
-                .recoverWithItem(ex -> Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity(ex.getMessage())
-                        .build());
-
-    }*/
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -59,7 +42,7 @@ public class OderResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> findOrderByUserId(@QueryParam("userId") String userId) {
-        return orderService.findOrdersByUserId(userId)
+        return orderFacade.findOrdersByUserId(userId)
                 .onItem()
                 .transform(list -> Response.ok(list).status(Response.Status.OK).build())
                 .onFailure(OrdersNotFoundException.class)
@@ -68,12 +51,11 @@ public class OderResource {
                         .build());
     }
 
-
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> updateOrderStatus(OrderUpdateDto orderDto) {
-        return orderService.updateOrder(orderDto.getOrderId(), orderDto.getStatus())
+        return orderFacade.updateOrder(orderDto.getOrderId(), orderDto.getStatus())
                 .onItem()
                 .transform(updatedOrder -> Response.ok(updatedOrder).status(Response.Status.OK).build())
                 .onFailure(OrdersNotFoundException.class)
