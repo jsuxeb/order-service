@@ -14,6 +14,8 @@ public interface OrderService {
 
     Uni<List<OrderDto>> findOrdersByUserId(String userId, int page, int pageSize);
 
+    Uni<OrderDto> findOrderByOrderId(Long orderId);
+
     Uni<Order> updateOrder(Long orderId, OrderStatus status);
 
     Uni<OrderResponse> transformOrderResponse(Order r, String channel);
