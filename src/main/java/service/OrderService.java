@@ -12,9 +12,7 @@ import java.util.List;
 public interface OrderService {
     Uni<Order> createOrder(OrderRequestDto orderRequestDto);
 
-    //Uni<List<OrderDto>> findOrdersByUserId(String userId, int page, int pageSize);
-
-    Uni<OrderDto> findOrderByOrderId(Long orderId);
+    Uni<List<OrderDto>> findOrdersByUserId(String userId, int page, int pageSize);
 
     Uni<Order> updateOrder(Long orderId, OrderStatus status);
 
