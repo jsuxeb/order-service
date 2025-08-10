@@ -23,9 +23,12 @@ public class OrderRepository implements PanacheRepository<Order> {
     }
 
     @WithSession
-    public Uni<List<Order>> findOrdersByUserId(String userId) {
+    public Uni<List<Order>> findOrdersByUserId(String userId, int page, int pageSize) {
+        if (page > 0) {
+            page = page - 1;
+        }
         return find("userId", userId)
-                .page(0, 10)
+                .page(page, pageSize)
                 .list();
 
     }

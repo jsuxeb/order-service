@@ -38,8 +38,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Uni<List<OrderDto>> findOrdersByUserId(String userId) {
-        return orderRepository.findOrdersByUserId(userId)
+    public Uni<List<OrderDto>> findOrdersByUserId(String userId, int page, int pageSize) {
+        return orderRepository.findOrdersByUserId(userId,page,pageSize)
                 .onItem()
                 .transform(orders -> {
                     if (orders == null || orders.isEmpty()) {

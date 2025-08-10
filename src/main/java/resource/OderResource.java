@@ -1,6 +1,5 @@
 package resource;
 
-import dto.OrderDto;
 import dto.OrderUpdateDto;
 import dto.request.OrderRequestDto;
 import exceptions.ErrorHandlerUtil;
@@ -13,7 +12,6 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import service.OrderService;
 
 @Path("/api/v1/orders")
 public class OderResource {
@@ -23,7 +21,9 @@ public class OderResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Uni<Response> createOrder(@DefaultValue("DIGITAL") @QueryParam("channel") String channel, @Valid final OrderRequestDto order) {
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Uni<Response> createOrder(@DefaultValue("DIGITAL") @QueryParam("channel") String channel,
+                                     @Valid final OrderRequestDto order) {
         return orderFacade.processOrder(channel, order)
                 .onItem()
                 .transform(orderDto -> {
@@ -36,13 +36,14 @@ public class OderResource {
                 .recoverWithItem(ex -> Response.status(ErrorHandlerUtil.createErrorMessage(ex).getStatus())
                         .entity(ex.getMessage())
                         .build());
-
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> findOrderByUserId(@QueryParam("userId") String userId) {
-        return orderFacade.findOrdersByUserId(userId)
+    public Uni<Response> findOrderByUserId(@QueryParam("userId") String userId,
+                                           @QueryParam("page") int page,
+                                           @QueryParam("pageSize") int pageSize) {
+        return orderFacade.findOrdersByUserId(userId, page, pageSize)
                 .onItem()
                 .transform(list -> Response.ok(list).status(Response.Status.OK).build())
                 .onFailure(OrdersNotFoundException.class)

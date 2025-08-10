@@ -33,11 +33,12 @@ public class OrderFacade {
                 .onItem().transformToUni(r -> orderService.transformOrderResponse(r, channel));
 
     }
-    public Uni<List<OrderDto>> findOrdersByUserId(String userId) {
-        return orderService.findOrdersByUserId(userId);
+
+    public Uni<List<OrderDto>> findOrdersByUserId(String userId, int page, int pageSize) {
+        return orderService.findOrdersByUserId(userId, page, pageSize);
     }
 
-    public Uni<OrderDto> updateOrder(Long orderId, OrderStatus status){
+    public Uni<OrderDto> updateOrder(Long orderId, OrderStatus status) {
         return orderService.updateOrder(orderId, status)
                 .onItem()
                 .ifNotNull()
