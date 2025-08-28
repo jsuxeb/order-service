@@ -2,6 +2,7 @@ package dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import model.OrderStatus;
+import model.Receipt;
 
 public class OrderDto extends OrderResponse {
 

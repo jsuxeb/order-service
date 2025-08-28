@@ -28,7 +28,7 @@
       "type": {
         "type": "enum",
         "name": "OrderStatus",
-        "symbols": ["CREATED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"]
+        "symbols": ["CREATED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED","ORDER_CONFIRMED"]
       }
     },
     { "name": "totalAmount", "type": "double" },

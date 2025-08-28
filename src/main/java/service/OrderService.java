@@ -2,6 +2,7 @@ package service;
 
 import dto.OrderDto;
 import dto.OrderResponse;
+import dto.request.OrderPaymentRqDto;
 import dto.request.OrderRequestDto;
 import io.smallrye.mutiny.Uni;
 import model.Order;
@@ -19,4 +20,6 @@ public interface OrderService {
     Uni<Order> updateOrder(Long orderId, OrderStatus status);
 
     Uni<OrderResponse> transformOrderResponse(Order r, String channel);
+
+    Uni<Order> payOrder(OrderPaymentRqDto orderPaymentRqDto);
 }

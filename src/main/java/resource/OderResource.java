@@ -1,11 +1,12 @@
 package resource;
 
 import dto.OrderUpdateDto;
+import dto.request.OrderPaymentRqDto;
 import dto.request.OrderRequestDto;
 import exceptions.ErrorHandlerUtil;
 import exceptions.OrderAlreadyInStateException;
 import exceptions.OrdersNotFoundException;
-import facade.OrderFacade;
+import facade.impl.OrderFacade;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class OderResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Uni<Response> createOrder(@DefaultValue("DIGITAL") @QueryParam("channel") String channel,
                                      @Valid final OrderRequestDto order) {
-        return orderFacade.processOrder(channel, order)
+        return orderFacade.creteOrder(channel, order)
                 .onItem()
                 .transform(orderDto -> {
                     MediaType mediaType = channel.equalsIgnoreCase("POS")
@@ -37,6 +38,26 @@ public class OderResource {
                         .entity(ex.getMessage())
                         .build());
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.TEXT_PLAIN})
+    @Path("/pay")
+    public Uni<Response> payOrder(@DefaultValue("DIGITAL") @QueryParam("channel") String channel, OrderPaymentRqDto order) {
+        return orderFacade.payOrder(order,channel)
+                .onItem()
+                .transform(orderDto -> {
+                    MediaType mediaType = channel.equalsIgnoreCase("POS")
+                            ? MediaType.TEXT_PLAIN_TYPE
+                            : MediaType.APPLICATION_JSON_TYPE;
+                    return Response.status(Response.Status.CREATED).entity(orderDto).type(mediaType).build();
+                })
+                .onFailure()
+                .recoverWithItem(ex -> Response.status(ErrorHandlerUtil.createErrorMessage(ex).getStatus())
+                        .entity(ex.getMessage())
+                        .build());
+    }
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

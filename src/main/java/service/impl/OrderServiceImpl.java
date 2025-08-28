@@ -1,7 +1,11 @@
 package service.impl;
 
+import chainofresp.payments.context.PaymentContext;
+import chainofresp.payments.handlers.*;
+import chainofresp.payments.processor.SelectProcessorHandler;
 import dto.OrderDto;
 import dto.OrderResponse;
+import dto.request.OrderPaymentRqDto;
 import dto.request.OrderRequestDto;
 import exceptions.OrderAlreadyInStateException;
 import exceptions.OrdersNotFoundException;
@@ -39,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Uni<List<OrderDto>> findOrdersByUserId(String userId, int page, int pageSize) {
-        return orderRepository.findOrdersByUserId(userId,page,pageSize)
+        return orderRepository.findOrdersByUserId(userId, page, pageSize)
                 .onItem()
                 .transform(orders -> {
                     if (orders == null || orders.isEmpty()) {
@@ -81,4 +85,27 @@ public class OrderServiceImpl implements OrderService {
     public Uni<OrderResponse> transformOrderResponse(Order r, String channel) {
         return contextStrategies.getStrategyOrderResponse(channel).buildResponse(r);
     }
+
+    @Override
+    public Uni<Order> payOrder(OrderPaymentRqDto orderPaymentRqDto) {
+
+        PaymentContext ctx = new PaymentContext(orderPaymentRqDto);
+        PayHandler chain = buildChain(orderRepository);
+
+        return chain.handle(ctx)
+                .map(PaymentContext::getOrder)
+                .onFailure()
+                .transform(e -> new RuntimeException("Error pagando la orden", e));
+    }
+
+    private PayHandler buildChain(OrderRepository orderRepository) {
+        PayHandler head = new ValidateHandler();
+        head.linkWith(new SelectProcessorHandler())
+                .linkWith(new BuildOrderHandler(orderRepository))
+                .linkWith(new ProcessPaymentHandler())
+                .linkWith(new PersistOrder(orderRepository));
+        return head;
+    }
+
+
 }

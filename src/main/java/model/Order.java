@@ -22,6 +22,12 @@ public class Order extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     private double totalAmount;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "intent") // la columna puede ser VARCHAR(100)
+    private PaymentIntent intent;
+    private String paymentType; // online, onSite
+    private String provider;//VISA,PAYPAL,CASH
+    private String paymentStatus;
 
     public Long getId() {
         return id;
@@ -77,5 +83,37 @@ public class Order extends PanacheEntityBase {
 
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public PaymentIntent getIntent() {
+        return intent;
+    }
+
+    public void setIntent(PaymentIntent intent) {
+        this.intent = intent;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

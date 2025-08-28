@@ -3,6 +3,7 @@ package repository;
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
+import io.quarkus.panache.common.Parameters;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.NotFoundException;
@@ -44,13 +45,26 @@ public class OrderRepository implements PanacheRepository<Order> {
 
     @WithTransaction
     public Uni<Order> updateOrder(Order order) {
-        String query = "Update Order o set o.status = ?1, o.updatedAt = ?2 where o.id = ?3";
-        return update(query, order.getStatus(), order.getUpdatedAt(), order.getId())
-                .onItem().transform(updatedOrder -> {
-                    log.info("Order updated successfully: {}", order.getId());
-                    return updatedOrder;
-                })
-                .onFailure().invoke(throwable -> log.error("Error updating order: {}", throwable.getMessage()))
+
+        String jpql =
+                "update Order o " +
+                        "set o.status        = :status, " +
+                        "    o.updatedAt     = :updatedAt, " +   // ← coma
+                        "    o.intent        = :intent, " +      // ← coma
+                        "    o.paymentType   = :paymentType, " + // ← coma
+                        "    o.provider      = :provider, " +    // ← coma
+                        "    o.paymentStatus = :paymentStatus " +
+                        "where o.id = :id";
+
+        return update(jpql, Parameters.with("status", order.getStatus())
+                .and("updatedAt", order.getUpdatedAt())
+                .and("intent", order.getIntent() == null ? null : order.getIntent())
+                .and("paymentType", order.getPaymentType())
+                .and("provider", order.getProvider())
+                .and("paymentStatus", order.getPaymentStatus())
+                .and("id", order.getId()))
+                .invoke(rows -> log.info("Order updated. rows={}, id={}", rows, order.getId()))
                 .replaceWith(order);
+
     }
 }
