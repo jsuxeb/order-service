@@ -34,7 +34,7 @@ public class ValidateHandler extends PayHandler {
             // Validaciones específicas por método de pago
             switch (rq.getMethod()) {
                 case VISA -> {
-                    // Exigir DTO correcto si aplica
+
                   /*  if (!(rq instanceof CardPaymentRqDto)) {
                         log.info("AQUI IMPLEMENTAR validaciones para VISA");*/
 
@@ -52,7 +52,7 @@ public class ValidateHandler extends PayHandler {
                     }*/
                 }
                 case CASH , CASH_ON_STORE-> {
-                    // Si quieres validar un DTO específico para cash, hazlo aquí
+
                     // if (!(rq instanceof CashPaymentRqDto)) { ...fail... }
                 }
 
@@ -63,7 +63,7 @@ public class ValidateHandler extends PayHandler {
                 }
             }
 
-            return Uni.createFrom().voidItem(); // ✅ fin exitoso
+            return Uni.createFrom().voidItem();
         });
     }
 }

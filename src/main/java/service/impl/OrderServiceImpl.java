@@ -10,6 +10,7 @@ import dto.request.OrderRequestDto;
 import exceptions.OrderAlreadyInStateException;
 import exceptions.OrdersNotFoundException;
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import model.Order;
@@ -45,14 +46,14 @@ public class OrderServiceImpl implements OrderService {
     public Uni<List<OrderDto>> findOrdersByUserId(String userId, int page, int pageSize) {
         return orderRepository.findOrdersByUserId(userId, page, pageSize)
                 .onItem()
-                .transform(orders -> {
+                .transform(Unchecked.function(orders -> {
                     if (orders == null || orders.isEmpty()) {
                         throw new OrdersNotFoundException("No existen pedidos para el usuario con ID: " + userId);
                     }
                     return orders.stream()
                             .map(ObjectMapperUtil::convertOrderToOrderDto)
                             .toList();
-                });
+                }));
     }
 
     @Override
